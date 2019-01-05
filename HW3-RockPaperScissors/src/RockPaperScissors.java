@@ -1,6 +1,5 @@
 import java.util.Scanner;
 import java.util.Random;
-import java.lang.*;
 
 public class RockPaperScissors {
 
@@ -10,23 +9,41 @@ public class RockPaperScissors {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println("Please enter your hand:");
+		boolean runQs = true;
+		boolean startOver = true;
+		String hand = "";
 		Scanner reader = new Scanner(System.in);
-		String hand = reader.nextLine();
 
-		if (isValidHand(hand)) {
-			System.out.println(hand + " is an invalid hand.");
-			System.out.println("Please choose one of \"Rock, Paper, Scissor \".");
-			return;
+		while (startOver) {
+			while (runQs) {
+				System.out.println("Please enter your hand:");
+
+				hand = reader.nextLine();
+
+				if (!isValidHand(hand.toUpperCase())) {
+					System.out.println(hand + " is an invalid hand.");
+					System.out.println("Please choose one of \"Rock, Paper, Scissor\".");
+					System.out.println();
+				} else {
+					runQs = false;
+				}
+			}
+
+			String computerHand = getRandomComputerHand();
+			String result = getWinner(hand.toUpperCase(), computerHand);
+
+			System.out.println("Your hand:" + hand);
+			System.out.println("Computer's hand:" + computerHand);
+			System.out.println("Result:" + result);
+			runQs = true;
+			
+			System.out.println("Continue playing (y/n)?");
+			String temp = reader.nextLine(); 
+			startOver = temp.toUpperCase().equals("Y") ? true : false;
+			System.out.println("");
 		}
-
-		
-		String computerHand = getRandomComputerHand();
-		String result = getWinner(hand.toUpperCase(), computerHand);
-
-		System.out.println("Your hand:" + hand);
-		System.out.println("Computer's hand:" + computerHand);
-		System.out.println("Result:" + result);
+		reader.close();
+		System.out.println("Thank you for playing.");
 	}
 
 	private static String getRandomComputerHand() {
@@ -37,7 +54,12 @@ public class RockPaperScissors {
 	}
 
 	private static boolean isValidHand(String hand) {
-		return Hands.valueOf(hand.toUpperCase()).ordinal() > 0 ? true : false;
+		for (Hands c : Hands.values()) {
+			if (c.name().equals(hand)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static String getWinner(String userHand, String computerHand) {

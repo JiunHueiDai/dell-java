@@ -16,13 +16,14 @@ public class Calculator {
 			System.out.println("");
 			calculateResults(value1, value2);
 			
-			System.out.println("Do you want to calculate other values (y or n)?");
+			System.out.println("Continue calculating other values (y/n)?");
 			String temp = reader.nextLine(); 
 			continueCal = temp.toUpperCase().equals("Y") ? true : false;
 			System.out.println("");
 		}
 		
 		reader.close();
+		System.out.println("Thank you for playing.");
 	}
 	
 	private static void calculateResults(double value1, double value2) {
