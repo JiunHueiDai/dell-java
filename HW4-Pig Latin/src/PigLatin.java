@@ -1,77 +1,79 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class PigLatin {
 
 	public static void main(String[] args) {
-		String pigLatinSartWithVowel= "";
-		String pigLatinStartWithCon = "";
-		String pigLatinWithVowel = "";
-		System.out.println("Please enter your word:");
+		boolean continueGame = true;
 		Scanner reader = new Scanner(System.in);
-		String word = reader.nextLine();
+		
+		while (continueGame) {
+			System.out.println("Please enter your word:");
+			String word = reader.nextLine().trim();
+			String pigLatinWord = playGame(word);
 
-		pigLatinSartWithVowel = getPigLatinStartWithVowel(word);
-		System.out.println("pig latin start with vowel: " + pigLatinSartWithVowel);
-		pigLatinStartWithCon = getPigLatinStartWithCon(word);	
-		System.out.println("pig latin start with con: " + pigLatinStartWithCon);
-		pigLatinWithVowel = checkIfAnyVowel(word);	
-		System.out.println("pig latin start with con: " + pigLatinWithVowel);
+			System.out.println(pigLatinWord);
+			System.out.println("");
+			System.out.println("Translate another word?");
+
+			if(reader.nextLine().trim().toUpperCase().equals("N")) {
+				continueGame = false;
+			}
+		}
 		
 		reader.close();
 	}
 
-	private static String getPigLatinStartWithVowel(String word) {
-		char firstChar = word.trim().charAt(0);
-		char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
-		for (char vowel : vowels) {
-			if (vowel == firstChar) {
-				return word + "yay";
+	private static String playGame(String word) {
+		if (hasFirstVowelLetter(word)) {
+			return word + "yay";
+		} else {
+			if (!hasAnyVowelAfterFirstLetter(word)) {
+				return word + "ay";
+			} else {
+				return getMiddleVowelPigLatinWord(word, getVowelPos(word));
 			}
 		}
-		return word;
-	}
-
-	private static String getPigLatinStartWithCon(String word) {
-		char[] chars = word.toCharArray();
-		char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
-		String frontWord = "";
-		
-		while(chars.length > 0) {
-			boolean foundVowel = false;
-			for (char vowel : vowels) {
-				if(chars[0] == vowel) {
-					foundVowel = true;
-				}
-			}
-
-			if(foundVowel) {
-				return new String(chars) + frontWord + "ay";
-			}
-			else {
-				frontWord += chars[0];
-				chars = Arrays.copyOfRange(chars, 1, chars.length);
-			}
-		}
-		return word;
 	}
 	
-	private static String checkIfAnyVowel(String word) {
-		char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
-		char[] wordChars = word.toCharArray();
-		boolean foundVowel = false;
-		
-		for(char wordChar : wordChars) {
-			for( char vowel :  vowels) {
-				if(wordChar == vowel) {
-					foundVowel = true;
-				}
+	private static boolean hasFirstVowelLetter(String word) {
+		String firstChar = Character.toString(word.charAt(0));
+
+		if (hasVowel(firstChar)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static boolean hasAnyVowelAfterFirstLetter(String word) {
+		return hasVowel(word);
+	}
+
+	private static int getVowelPos(String word) {
+		char[] wordCharArray = word.toCharArray();
+
+		for (int i = 0; i < wordCharArray.length; i++) {
+			if (hasVowel(Character.toString(wordCharArray[i]))) {
+				return i;
 			}
 		}
-		
-		if (!foundVowel) {
-			return word + "ay";
+
+		return -1;
+	}
+
+	private static String getMiddleVowelPigLatinWord(String word, int pos) {
+		return word.substring(pos, word.length()) + word.substring(0, pos) + "ay";
+	}
+
+	private static boolean hasVowel(String word) {
+		String[] vowels = { "a", "e", "i", "o", "u" };
+		for (String vowel : vowels) {
+			if (word.contains(vowel))
+				return true;
 		}
-		return word;
+		return false;
 	}
 }
