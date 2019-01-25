@@ -6,7 +6,7 @@ public class LicenseProgram {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		List<DriversLicense> dvList = new LinkedList<DriversLicense>();
-		
+
 		DriversLicense dv1 = new DriversLicense("John", "Muphy", "1998-05-14", "6\"4'", "M");
 		DriversLicense dv2 = new DriversLicense("Anders", "Hejlsberg", "1960-12-25", "5\"11'", "M");
 		DriversLicense dv3 = new DriversLicense("Oprah", "Winfrey", "1954-01-29", "5\"4'", "F");
@@ -17,6 +17,7 @@ public class LicenseProgram {
 		int i = 1;
 		for(DriversLicense driver: dvList) {
 			System.out.println("Number" + i + " Driver Full Name:" + driver.getFullName() + " at Age " + driver.getAge());
+			i++;
 		}
 	}
 
