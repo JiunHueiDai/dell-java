@@ -4,6 +4,10 @@ public class CarLotProgram {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
+		/*
+		 * Create a Car Lot named "Austin", and then add 2 cars and 1 truck in the lot.
+		 * Print out all the vehicle details
+		 */
 		CarLots Austin = new CarLots("Austin Car Lots");
 		// make, model, price, license number, description, type, number of doors
 		Vehicle car1 = new Car("Honda", "Fit", "22000", "10001",
@@ -15,13 +19,16 @@ public class CarLotProgram {
 		Vehicle truck1 = new Truck("GMC", "Canyon", "34900", "10003",
 				"The GMC Canyon offers class-leading towing capabilities, lots of available tech and safety features, and a smooth highway ride. The eyebrow-raising prices of fancier models constitute the Canyon's biggest shortcoming.",
 				2);
-		
 		Austin.addVehicle(car1);
 		Austin.addVehicle(truck1);
 		Austin.addVehicle(car2);
 		Austin.printCarLot();
 		System.out.println();
-		
+
+		/*
+		 * Create a Car Lot named "Cedar Park", and then add 2 cars and 2 truck in the
+		 * lot. Print out all the vehicle details
+		 */
 		CarLots CedarPark = new CarLots("Cedar Park Car Lots");
 		// make, model, price, license number, description, type, number of doors
 		Vehicle car3 = new Car("Tesla", "Model 3", "35000", "10004",
@@ -43,6 +50,5 @@ public class CarLotProgram {
 		CedarPark.addVehicle(car4);
 		CedarPark.addVehicle(truck3);
 		CedarPark.printCarLot();
-
 	}
 }

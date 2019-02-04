@@ -1,6 +1,8 @@
 
 public class Truck extends Vehicle {
-	/*This variable will only be set in constructor since it doesn't contain setter*/
+	/*
+	 * This variable will only be set in constructor since it doesn't contain setter
+	 */
 	private int _bedSize;
 
 	/*The getter for bed size of a Car*/
