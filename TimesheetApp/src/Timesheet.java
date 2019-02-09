@@ -60,7 +60,7 @@ public class Timesheet {
 
 	}
 
-	/* get the entry with matching passed in id*/
+	/* get the entry with matching passed in id */
 	public TimesheetEntry get(int id) {
 		for (TimesheetEntry entry : database) {
 			if (entry.getId() == id) {
@@ -71,18 +71,13 @@ public class Timesheet {
 		return null;
 	}
 
-	/*delete the entry from the database*/
+	/* delete the entry from the database */
 	public void delete(TimesheetEntry entry) {
 		database.remove(entry);
 	}
 
-	/*set the endtime to now*/
+	/* set the endtime to now */
 	public void stop(TimesheetEntry entry) {
-		
-		try {
-			entry.updateEndTime();
-		}catch (Exception e){
-			System.out.println("Error: You have set the end time to this project.");
-		}
+		entry.updateEndTime();
 	}
 }

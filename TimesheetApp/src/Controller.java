@@ -61,9 +61,7 @@ public class Controller {
 				// do nothing.
 
 			} else {
-
-				// Your code here
-
+				consoleUtils.error("Invalid action");
 			}
 		}
 
@@ -80,14 +78,26 @@ public class Controller {
 			return;
 		}
 
-		int id = Integer.parseInt(actionParts[1]);
-		TimesheetEntry myEntry = timesheet.get(id);
+		try {
+			int id = Integer.parseInt(actionParts[1]);
+			TimesheetEntry myEntry = timesheet.get(id);
 
-		if (myEntry != null) {
-			timesheet.stop(myEntry);
-		} else {
-			consoleUtils.info("There is no timesheet entry with Id = " + id + " to be stopped.");
+			if (myEntry != null) {
+
+				try {
+					timesheet.stop(myEntry);
+					consoleUtils.info("Entry stopped");
+				} catch (Exception e) {
+					consoleUtils.error("Stop command failed, was entry already stopped?");
+				}
+
+			} else {
+				consoleUtils.error("Could not find entry with id " + id);
+			}
+		} catch (Exception e) {
+			consoleUtils.error("Stop command requires a valid integer id");
 		}
+
 	}
 
 	/*
@@ -101,15 +111,19 @@ public class Controller {
 			return;
 		}
 
-		int id = Integer.parseInt(actionParts[1]);
-		TimesheetEntry myEntry = timesheet.get(id);
+		try {
+			int id = Integer.parseInt(actionParts[1]);
+			TimesheetEntry myEntry = timesheet.get(id);
 
-		if (myEntry != null) {
-			timesheet.delete(myEntry);
-		} else {
-			consoleUtils.info("There is no timesheet entry with Id = " + id + " to be deleted.");
+			if (myEntry != null) {
+				timesheet.delete(myEntry);
+				consoleUtils.info("Entry deleted");
+			} else {
+				consoleUtils.error("Could not find entry with id " + id);
+			}
+		} catch (Exception e) {
+			consoleUtils.error("Delete command requires a valid integer id");
 		}
-
 	}
 
 	/*
@@ -164,15 +178,19 @@ public class Controller {
 
 		if (isValidProjectName(project)) {
 			timesheet.add(project, description);
+			consoleUtils.info("Entry added");
 		} else {
-			System.out.println("The project and the task description aren't added because project name is invalid.");
-			System.out.println("Please provide one-word-only project name (no space in the between).");
+			consoleUtils.error(
+					"A project is required. \nThe project and the task description aren't added because project name is invalid. \nPlease provide one-word-only project name (no space in the between).");
 		}
-
 	}
 
 	/* Check if project name is one word only */
 	private boolean isValidProjectName(String project) {
+		if (project.trim().equals("")) {
+			return false;
+		}
+
 		String[] arrProjectName = project.split(" ");
 
 		if (arrProjectName.length != 1) {
