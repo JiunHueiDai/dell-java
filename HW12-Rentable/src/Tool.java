@@ -14,9 +14,9 @@ public class Tool implements Rentable {
 		return _description;
 	}
 
-	/* Getter to return the tool daily rental rate */
+	/* Getter to return the tool daily rental rate by using hourly rate times 24 hours a day*/
 	public double getDailyRate() {
-		return _hourlyRate;
+		return _hourlyRate * 24;
 	}
 
 	/*
@@ -24,6 +24,6 @@ public class Tool implements Rentable {
 	 * amount
 	 */
 	public double getPrice(double days) {
-		return _hourlyRate * days;
+		return getDailyRate() * days;
 	}
 }

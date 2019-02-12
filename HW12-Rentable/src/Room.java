@@ -25,6 +25,6 @@ public class Room implements Rentable {
 	 * amount
 	 */
 	public double getPrice(double days) {
-		return _dailyRate * days;
+		return getDailyRate() * days;
 	}
 }

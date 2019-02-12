@@ -9,7 +9,6 @@ public class RentableProgram {
 		printRentableDetailToUser(aRentableArray, 0);
 		int daysToRent = getUserRentalDays();
 		printRentableDetailToUser(aRentableArray, daysToRent);
-
 	}
 
 	/*
@@ -27,9 +26,9 @@ public class RentableProgram {
 			System.out.println(aRentable[i].getDescription());
 
 			if (days > 0) {
-				System.out.println("     - Total amount: $" + aRentable[i].getPrice(days));
+				System.out.printf("     - Total amount: %.2f \n", aRentable[i].getPrice(days));
 			} else {
-				System.out.println("     - Daily rate: $" + aRentable[i].getDailyRate());
+				System.out.printf("     - Daily rate: %.2f \n", aRentable[i].getDailyRate());
 			}
 		}
 	}
@@ -55,7 +54,7 @@ public class RentableProgram {
 	private static void filloutRentalDetail(Rentable[] aRentable) {
 		Room aRoom = new Room(249.99, "A Room with 2 queen size beds and one bath.");
 		Condo aCondo = new Condo(461.99, "A Condo with 3 bedrooms, 2 baths, and one living room.");
-		Tool aTool = new Tool(37.83, "A Vacuum to keep fresh floors.");
+		Tool aTool = new Tool(19.83, "A Vacuum to keep fresh floors.");
 		aRentable[0] = aRoom;
 		aRentable[1] = aCondo;
 		aRentable[2] = aTool;

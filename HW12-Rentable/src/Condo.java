@@ -15,9 +15,9 @@ public class Condo implements Rentable {
 		return _description;
 	}
 
-	/* Getter to return the condo daily rental rate */
+	/* Getter to return the condo daily rental rate by dividing 7 days in a week*/
 	public double getDailyRate() {
-		return _weeklyRate;
+		return _weeklyRate / 7;
 	}
 
 	/*
@@ -25,7 +25,7 @@ public class Condo implements Rentable {
 	 * amount
 	 */
 	public double getPrice(double days) {
-		return _weeklyRate * days;
+		return getDailyRate() * days;
 	}
 
 }
