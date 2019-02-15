@@ -22,11 +22,11 @@ public class Game {
 			if (checkIfGuessValid(guess)) {
 				matchingPos = _word.indexOf(guess);
 				if (matchingPos > -1 && matchingPos < _word.length()) {
-					_mockWordChar[matchingPos] = guess.charAt(0);
+					replaceCharInMockWord(guess);
 					displayResult();
-					numberOfLeftLetters--;
 					if (numberOfLeftLetters == 0) {
 						continueGuess =false;
+						System.out.println("");
 						System.out.println("Congrats!! You won the game. The word is \"" + _word + "\".");
 					}
 				}else
@@ -37,9 +37,21 @@ public class Game {
 				System.out.println("Please enter one single letter.");
 			}
 		}
+		
+		reader.close();
 
 	}
 
+	private void replaceCharInMockWord(String guess) {
+		char[] wordCharArray = _word.toCharArray();
+		for(int i=0; i<wordCharArray.length; i++) {
+			if(wordCharArray[i] == guess.charAt(0)) {
+				_mockWordChar[i] = guess.charAt(0);
+				numberOfLeftLetters--;
+			}
+		}
+	}
+	
 	private void mockQuestion() {
 		_mockWordChar = String.join("", Collections.nCopies(_word.length(), "_")).toCharArray();
 	}
