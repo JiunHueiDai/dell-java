@@ -10,6 +10,7 @@ import java.util.List;
 public class DAO {
 	private List<ToDoItem> _list;
 	Statement statement = null;
+	private int _id = 0;
 
 	public DAO() {
 		_list = new ArrayList<>();
@@ -23,7 +24,6 @@ public class DAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public void create() {
@@ -31,39 +31,29 @@ public class DAO {
 		try {
 			statement.executeUpdate("drop table if exists itemList");
 			statement.executeUpdate(
-					"create table itemList(id integer, name string, description string, dueDate date, isCompleted boolean)");
+					"create table itemList(id integer, description string, isCompleted boolean)");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void update() {
+	public void markDone(int itemId) {
 		try {
-			statement.executeUpdate("UPDATE itemList\r\n" + "SET name = new_value_1,\r\n"
-					+ "    description = new_value_2,\r\n" + "    dueDate = new_value_3,\r\n"
-					+ "    completed = new_value_4,\r\n" + "WHERE\r\n" + "    id = 1 \r\n");
+			String queryString = "UPDATE itemList SET isCompleted = true WHERE id = " + itemId;
+			statement.executeUpdate(queryString);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void add() {
+	public void add(String description) {
 		try {
-			statement.executeUpdate("insert into itemList values(1, 'Wedding')");
-			statement.executeUpdate("insert into itemList values(2, 'Send out invitation')");
-			statement.executeUpdate("insert into itemList values(3, 'Check with speaker')");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			_id++;
+			String queryString = "insert into itemList values(" + _id + ", " + description + ")";
+			statement.executeUpdate(queryString);
 
-	}
-
-	public void delete() {
-		try {
-			statement.executeUpdate("DELETE FROM itemList WHERE id = 1;");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,26 +61,70 @@ public class DAO {
 
 	}
 
-	public List<ToDoItem> list() {
-
+	public void delete(int itemId) {
 		try {
-			ResultSet rs = statement.executeQuery("select * from itemList");
+			ToDoItem item = getItem(itemId);
+			statement.executeUpdate("DELETE FROM itemList WHERE id = " + Integer.toString(itemId));
+			System.out.println("id:        :" + item._id);
+			System.out.println("description:" + item._description);
+			System.out.println("status     :" + item._isCompleted);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private ToDoItem getItem(int itemId) {
+		ToDoItem foundItem = null;
+		
+		try {
+			ResultSet rs = statement.executeQuery("select * from itemList where id = " + Integer.toString(itemId));
 			int id = -1;
 			String name = "";
 			String description = "";
-			LocalDateTime dueDate = null;
 			boolean isCompleted = false;
 			
 			while (rs.next()) {
 				// read the result set
-//			new ToDoItem();
 				id = rs.getInt("id");
-				name = rs.getString("name");
 				description = rs.getString("description");
-				dueDate = LocalDateTime.parse(rs.getString("dueDate"));
 				isCompleted = Boolean.parseBoolean(rs.getString("isCompleted"));
-				_list.add(new ToDoItem(id, name, description, dueDate, isCompleted));
+				foundItem = new ToDoItem(id, description, isCompleted);
 			}
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return foundItem;
+	}
+	
+	public List<ToDoItem> list(String status) {
+
+		try {
+			String query = "select * from itemList ";
+			
+			if(status == "done") {
+				query = query + "where isCompleted = true";
+			}else if(status == "pending") {
+				query = query + "where isCompleted = false";
+			}
+			
+			ResultSet rs = statement.executeQuery(query);
+			int id = -1;
+			String description = "";
+			boolean isCompleted = false;
+
+			while (rs.next()) {
+				// read the result set
+				id = rs.getInt("id");
+				description = rs.getString("description");
+				isCompleted = Boolean.parseBoolean(rs.getString("isCompleted"));
+				_list.add(new ToDoItem(id, description, isCompleted));
+			}
+			
+			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
