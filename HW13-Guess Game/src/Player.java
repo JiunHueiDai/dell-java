@@ -25,13 +25,13 @@ public class Player {
 		while (continueGuess == true) {
 			guess = getUserInput(reader);
 
-			if (isValidAndMatch(guess) == false)
-				return;
-
-			replaceCharInMockWord(guess);
-			displayWord();
-			checkGameResult();
-			continueGuess = continuePlaying();
+			if (isValidAndMatch(guess) == true)
+			{
+				replaceCharInMockWord(guess);
+				displayWord();
+				checkGameResult();
+				continueGuess = continuePlaying();
+			}
 		}
 		reader.close();
 	}
