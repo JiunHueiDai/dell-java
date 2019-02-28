@@ -19,7 +19,7 @@ public class ToDoItem {
 		return _description;
 	}
 
-	public boolean isCompletedFlag() {
+	public boolean getIsCompleted() {
 		return _isCompleted;
 	}
 
