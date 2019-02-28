@@ -21,19 +21,36 @@ public class Player {
 		boolean continueGuess = true;
 		Scanner reader = new Scanner(System.in);
 		String guess = "";
-
+		String guessedWords = "";
 		while (continueGuess == true) {
 			guess = getUserInput(reader);
 
-			if (isValidAndMatch(guess) == true)
-			{
+			if (isValidAndMatch(guess) == true) {
 				replaceCharInMockWord(guess);
 				displayWord();
 				checkGameResult();
 				continueGuess = continuePlaying();
+			} else {
+				guessedWords = collectGuessedWords(guessedWords, guess);
+				System.out.println("Guessed Words: " + guessedWords);
+				System.out.println();
 			}
 		}
 		reader.close();
+	}
+
+	/* Collect all words that user has guessed and missed */
+	private String collectGuessedWords(String guessedWords, String guess) {
+		if (checkIfUserInputIsValid(guess) == true) {
+			if (guessedWords.indexOf(guess.toLowerCase()) < 0) {
+				if (guessedWords == "") {
+					guessedWords = guess.toLowerCase();
+				} else {
+					guessedWords = guessedWords + ", " + guess.toLowerCase();
+				}
+			}
+		}
+		return guessedWords;
 	}
 
 	/*
