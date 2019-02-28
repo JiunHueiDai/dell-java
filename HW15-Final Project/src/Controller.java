@@ -3,16 +3,18 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
-	private Scanner _reader;
-	private DAO _dao = new DAO();
 
+	private DAO _dao = new DAO();
+	private ConsoleUtils _utils = new ConsoleUtils();
+	Scanner _reader = new Scanner(System.in);
+
+	/* Start the actions */
 	public void start() {
-		_reader = new Scanner(System.in);
+		_utils.printHelp();
 		_dao.create();
-		printHelp();
 		boolean continueAction = true;
 		while (continueAction) {
-			String input = promptMessageAndGetInput("Please select an option:");
+			String input = _utils.promptMessageAndGetInput("Please select an option:", _reader);
 			String[] actionParts = input.split(" ");
 			String action = actionParts[0].trim(); // Primary action
 
@@ -34,30 +36,36 @@ public class Controller {
 				processListAction(actionParts);
 
 			} else if (action.equals("quit")) {
-				
+
 				processQuitAction();
 				continueAction = false;
 
 			} else if (action.equals("help")) {
 
-				printHelp();
+				_utils.printHelp();
 
 			} else if (action.length() == 0) {
 
 				// do nothing.
 
 			} else {
-				promptMessage("[Error: Invalid action]");
+				_utils.promptMessage("[ERROR] Invalid action]");
 			}
 		}
 		_reader.close();
 
 	}
 
+	// when quitting this application, it should close connections
 	private void processQuitAction() {
 		_dao.closeConnection();
 	}
-	
+
+	/*
+	 * list all: list all items in the table list pending: only list the items that
+	 * haven't been completed list done: only list the items that have been
+	 * completed any other options in the list will be an invalid list action
+	 */
 	private void processListAction(String[] actionParts) {
 		List<ToDoItem> _list = new ArrayList<>();
 		boolean print = true;
@@ -68,90 +76,56 @@ public class Controller {
 		} else if (actionParts[1].equals("pending")) {
 			_list = _dao.list("pending");
 		} else {
-			promptMessage("[Error: Invalid list action]");
+			_utils.promptMessage("[ERROR] Invalid list action");
 			print = false;
 		}
-		
-		if(print == true) {
-			printList(_list);
+
+		if (print == true) {
+			_utils.printList(_list);
 		}
 	}
 
-	private void processDeleteAction() {
-		int itemId = Integer.parseInt(promptMessageAndGetInput("Enter an item id:"));
-		_dao.delete(itemId);
-		promptMessage("[item delete]");
-	}
-
-	private void processMarkDoneAction() {
-		int itemId = Integer.parseInt(promptMessageAndGetInput("Enter an item id:"));
-		_dao.markDone(itemId);
-	}
-
-	private String promptMessageAndGetInput(String message) {
-		System.out.println(message);
-		return _reader.nextLine();
-	}
-
-	private void promptMessage(String message) {
-		System.out.println(message);
-		System.out.println();
-	}
-
-	private void processAddAction() {
-		String description = promptMessageAndGetInput("Item Description: ");
-		_dao.add(description);
-		promptMessage("[Entry added]");
-	}
-
-	private void printHelp() {
-		System.out.println("Available functions: ");
-		System.out.println("  add: 			to add an item");
-		System.out.println("  delete: 		to delete an item");
-		System.out.println("  mark done:    the item to mark as done");
-		System.out.println("  list pending: to list the pending items");
-		System.out.println("  list done:    to list the done items");
-		System.out.println("  list all:	    to list all items");
-		System.out.println("  help: 		display available functions");
-		System.out.println("  quit: 		to quit");
-		System.out.println();
-	}
-	
 	/*
-	 * Prints a list of TimesheetEntry objects in a pretty table
+	 * Delete an item from id that user inputs. If user provides an empty space, it
+	 * will consider invalid id.
 	 */
-    public void printList(List<ToDoItem> entries){
-        int longestItemDescription =  16;
-        
-        for(ToDoItem entry : entries){
-            if(entry.getDescription().length() > longestItemDescription) {
-            	longestItemDescription = entry.getDescription().length();
-            }
-        }
+	private void processDeleteAction() {
+		try {
+			int itemId = Integer.parseInt(_utils.promptMessageAndGetInput("Enter an item id:", _reader));
 
-        String itemHeader = String.format("%"+longestItemDescription+"s", "Item Description");
-        String itemUnderline = "";
-        for(int i=0;i<longestItemDescription;i++){
-            itemUnderline+="-";
-        }
+			boolean deletedSuccess = _dao.delete(itemId);
+			if (deletedSuccess) {
+				_utils.promptMessage("[item delete]");
+			} else {
+				_utils.promptMessage("[ERROR] Could not find the item with Id: " + itemId);
+			}
+		} catch (Exception e) {
+			_utils.promptMessage("[ERROR] Invalid Id");
+		}
+	}
 
-        System.out.println(" ID | "+ itemHeader   +" | IsCompleted    ");
-        System.out.println("----+-"+ itemUnderline+"-+----------------");
+	/*
+	 * Mark an item as done/completed by the item id that user provides. If user
+	 * provides an empty space, it will consider invalid id.
+	 */
+	private void processMarkDoneAction() {
+		try {
+			int itemId = Integer.parseInt(_utils.promptMessageAndGetInput("Enter an item id:", _reader));
+			boolean markedSuccess = _dao.markDone(itemId);
+			if (markedSuccess) {
+				_utils.promptMessage("[item updated]");
+			} else {
+				_utils.promptMessage("[ERROR] Could not find the item with Id: " + itemId);
+			}
+		} catch (Exception e) {
+			_utils.promptMessage("[ERROR] Invalid Id");
+		}
+	}
 
-        for(ToDoItem entry : entries){
-            String itemDescription = String.format("%-"+longestItemDescription+"s", entry.getDescription());
-            String isCompleted = Boolean.toString(entry.getIsCompleted());
-
-            String line = String.format(" %2s | %s | %s ", entry.getId(), itemDescription, isCompleted);
-            System.out.println(line);
-        }
-
-        if(entries.size() == 1){
-            System.out.println("[1 entry]");
-        } else {
-            System.out.println("["+entries.size()+" entries]");
-        }
-
-        System.out.println();
-    }
+	/* Add an item description with an automatically increased item id */
+	private void processAddAction() {
+		String description = _utils.promptMessageAndGetInput("Item Description: ", _reader);
+		_dao.add(description);
+		_utils.promptMessage("[Item added]");
+	}
 }
